@@ -4,7 +4,7 @@ from pathlib import Path
 
 from .calibration import run_calibration
 from .instrument import scan_resources
-from .tracking import run_tracking
+from .tracking import CALIBRATION_FILE, run_tracking
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -20,9 +20,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     subparsers.add_parser("scan", help="List VISA resources")
 
-    calibrate = subparsers.add_parser("calibrate", help="Run nine-point hardware calibration")
+    calibrate = subparsers.add_parser("calibrate", help="Run three-plane hardware calibration")
     calibrate.add_argument("--resource", default=os.getenv("DP832_RESOURCE"))
-    calibrate.add_argument("--output", type=Path, default=Path("calibration-output.json"))
+    calibrate.add_argument("--output", type=Path, default=CALIBRATION_FILE)
     return parser
 
 

@@ -7,4 +7,5 @@ __pycache__/
 *.log
 face_landmarker.task
 calibration-output.json
+galvo_calibration.json
 
