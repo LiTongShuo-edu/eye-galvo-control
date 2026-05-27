@@ -59,6 +59,15 @@ class TestCalibrationMath:
         assert voltages is None
         assert status == "Outside Calibrated Volume / Holding"
 
+    def test_target_requiring_voltage_beyond_limit_holds_output(self):
+        can_update, voltages, status = tracking.calculate_dp832_voltages(
+            synthetic_point(3.7, 5.0, 600.0), self.model
+        )
+
+        assert can_update is False
+        assert voltages is None
+        assert status == "Outside Calibrated Volume / Holding"
+
     def test_rejects_effectively_coincident_depth_layers(self):
         with pytest.raises(ValueError):
             tracking.build_calibration_model(synthetic_layers((500.0, 503.0, 512.0)))

@@ -282,13 +282,15 @@ def calculate_dp832_voltages(target_3d, calibration):
     voltage_x = _interpolate_voltage(target[0], x_positions, x_voltages)
     voltage_y = _interpolate_voltage(target[1], y_positions, y_voltages)
     low, high = calibration["voltage_limits"]
-    voltage_x = float(np.clip(voltage_x, low, high))
-    voltage_y = float(np.clip(voltage_y, low, high))
+    if not low <= voltage_x <= high or not low <= voltage_y <= high:
+        return False, None, "Outside Calibrated Volume / Holding"
     if (
         depth < lower
         or depth > upper
-        or voltage_x in (low, high)
-        or voltage_y in (low, high)
+        or math.isclose(voltage_x, low, abs_tol=1e-9)
+        or math.isclose(voltage_x, high, abs_tol=1e-9)
+        or math.isclose(voltage_y, low, abs_tol=1e-9)
+        or math.isclose(voltage_y, high, abs_tol=1e-9)
     ):
         return True, (voltage_x, voltage_y), "Limited Extrapolation"
     return True, (voltage_x, voltage_y), "Tracking"
