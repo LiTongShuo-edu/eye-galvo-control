@@ -1,0 +1,6 @@
+mediapipe==0.10.32
+numpy==2.4.2
+opencv-contrib-python==4.13.0.92
+pyrealsense2==2.56.5.9235
+PyVISA==1.16.2
+
