@@ -30,17 +30,17 @@ $$\mathbf{P}_{i,1},\ \mathbf{P}_{i,2},\ \mathbf{P}_{i,3}$$
 
 $$\mathbf{r}_i(t) = \mathbf{o}_i + t\mathbf{d}_i$$
 
-其中 $\mathbf{o}_i$ 是该电压组合对应射线的参考点，$\mathbf{d}_i$ 是单位方向向量。
+其中 $\mathbf{o_i}$ 是该电压组合对应射线的参考点，$\mathbf{d_i}$ 是单位方向向量。
 
 首先求三个观测点的质心：
 
 $$\mathbf{o}_i = \frac{1}{3}\sum_{k=1}^{3}\mathbf{P}_{i,k}$$
 
-将中心化后的点组成矩阵 $\mathbf{A}_i$：
+将中心化后的点组成矩阵 $\mathbf{A_i}$：
 
 $$\mathbf{A}_i = \begin{bmatrix} (\mathbf{P}_{i,1}-\mathbf{o}_i)^T \\ (\mathbf{P}_{i,2}-\mathbf{o}_i)^T \\ (\mathbf{P}_{i,3}-\mathbf{o}_i)^T \end{bmatrix}$$
 
-程序对 $\mathbf{A}_i$ 进行奇异值分解，取最大奇异值对应的右奇异向量作为单位方向 $\mathbf{d}_i$，并统一令其 $Z$ 分量为正。这等价于最小化观测点到拟合直线的平方距离：
+程序对 $\mathbf{A_i}$ 进行奇异值分解，取最大奇异值对应的右奇异向量作为单位方向 $\mathbf{d_i}$，并统一令其 $Z$ 分量为正。这等价于最小化观测点到拟合直线的平方距离：
 
 $$\min_{\|\mathbf{d}_i\|=1} \sum_{k=1}^{3} \left\| (\mathbf{P}_{i,k}-\mathbf{o}_i) - \big((\mathbf{P}_{i,k}-\mathbf{o}_i)^T\mathbf{d}_i\big)\mathbf{d}_i \right\|^2$$
 
@@ -52,7 +52,7 @@ $$\min_{\|\mathbf{d}_i\|=1} \sum_{k=1}^{3} \left\| (\mathbf{P}_{i,k}-\mathbf{o}_
 
 $$\mathbf{P}_e = [X_e,\ Y_e,\ Z_e]^T$$
 
-对每条校准射线，在目标深度平面 $Z = Z_e$ 上求交点。设 $\mathbf{o}_i = [o_x, o_y, o_z]^T$、$\mathbf{d}_i = [d_x, d_y, d_z]^T$，则：
+对每条校准射线，在目标深度平面 $Z = Z_e$ 上求交点。设 $\mathbf{o_i} = [o_x, o_y, o_z]^T$、$\mathbf{d_i} = [d_x, d_y, d_z]^T$，则：
 
 $$t_e = \frac{Z_e-o_z}{d_z}, \qquad \mathbf{Q}_i(Z_e) = \mathbf{o}_i + t_e\mathbf{d}_i$$
 
