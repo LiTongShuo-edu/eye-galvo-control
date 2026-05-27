@@ -6,7 +6,7 @@
 
 RealSense 提供与彩色图像对齐的深度值。设亮斑或双眼中心像素为 $(u, v)$，深度为 $Z$，相机内参主点为 $(c_x, c_y)$，焦距为 $(f_x, f_y)$，则相机坐标系中的三维点记为 $\mathbf{P}_C = [X, Y, Z]^T$，其中：
 
-$$\boxed{\mathbf{P}_C =\begin{bmatrix}(u-c_x)Z/f_x \\(v-c_y)Z/f_y \\Z\end{bmatrix}}$$
+$$\boxed{\mathbf{P}_C = \left[(u-c_x)Z/f_x,\ (v-c_y)Z/f_y,\ Z\right]^T}$$
 
 程序对亮斑中心邻域中的有效深度取平均，再使用上述针孔模型得到每个标定样本的 `coords_3d`。
 
@@ -16,7 +16,7 @@ $$\boxed{\mathbf{P}_C =\begin{bmatrix}(u-c_x)Z/f_x \\(v-c_y)Z/f_y \\Z\end{bmatri
 
 $$\mathcal{V} = \{4.0, 5.0, 6.0\} \times \{4.0, 5.0, 6.0\}$$
 
-也就是 $V_x$ 和 $V_y$ 都只取 $4.0$、$5.0$、$6.0$ 三个值，共形成 $3 \times 3$ 的九个电压点。
+也就是 $V_x$ 和 $V_y$ 都只取 $4.0,\ 5.0,\ 6.0$ 这三个值，共形成 $3 \times 3$ 的九个电压点。
 
 操作者依次在近距离、工作距离和远距离放置承接平面。对于每一组电压 $(V_x, V_y) \in \mathcal{V}$，系统在三个不同深度获取三维亮斑位置：
 
