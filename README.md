@@ -2,7 +2,7 @@
 
 [![Python Verification](https://github.com/LiTongShuo-edu/eye-galvo-control/actions/workflows/python.yml/badge.svg)](https://github.com/LiTongShuo-edu/eye-galvo-control/actions/workflows/python.yml)
 
-这是一个视觉定位与振镜控制实验项目。程序使用 Intel RealSense 深度相机和 MediaPipe Face Landmarker 获取双眼中心的三维位置与偏角，并通过 PyVISA 向 RIGOL DP832 输出振镜控制电压。项目将计算逻辑、仪器通信和运行流程拆分开，以便在没有实验硬件时测试核心控制行为。
+这是一个视觉定位与振镜控制实验项目。程序使用 Intel RealSense 深度相机和 MediaPipe Face Landmarker 获取双眼中心的三维位置与偏角，并通过 PyVISA 向 RIGOL DP832 输出振镜控制电压。真实设备联调已完成设计功能验证：系统可依据眼部位置控制振镜，将全息图像即时定向反射到人眼中。项目同时将计算逻辑、仪器通信和运行流程拆分开，以便在没有实验硬件时重复测试核心控制行为。
 
 ## 功能概览
 
@@ -54,14 +54,22 @@ py -3.12 -m venv .venv
 
 GitHub Actions 会在每次提交后运行同一组测试。自动测试验证的是可隔离的逻辑和控制序列，不代表视觉定位精度或完整硬件系统性能测量结果。
 
+## 现场功能验证
+
+项目已在真实设备环境下完成联动验证，验证结论记录于 [`docs/hardware-validation.md`](./docs/hardware-validation.md)：
+
+- 相机追踪眼部位置后，程序能够驱动振镜控制流程运行。
+- 系统能够完成设计目标，将全息图像通过振镜即时定向反射到人眼中。
+- 该验证确认功能链路可以实现，不扩展为尚未单独测量的定位精度、响应时延或长期稳定性指标。
+
 ## 硬件与安全说明
 
 - 实验设备范围：Intel RealSense D435i 或兼容深度相机、RIGOL DP832、振镜组件及 VISA 后端。
 - 联动模式在退出时会将控制电压归中并关闭输出通道；首次连接前仍应人工确认限幅、接线与光路安全。
 - 公开代码不含实际仪器资源地址、序列号、个人画面或实验日志。
-- 带日期的现场联动/标定复核记录在完成复核后加入 [`docs/hardware-validation.md`](./docs/hardware-validation.md)。
-- 未补入现场记录前，本仓库不提供定位精度、响应速度或完整联动性能指标。
+- 现场功能验证结论见 [`docs/hardware-validation.md`](./docs/hardware-validation.md)；公开记录不包含个人画面或设备敏感标识。
+- 本仓库提供已完成的功能联动结论，不提供尚未以量化实验单独测量的定位精度、响应时延或长期稳定性指标。
 
 ## AI 协作说明
 
-该公开版本在 Codex 协助下完成模块拆分、配置脱敏、测试编排和文档整理。本人负责确认实验流程、公开范围、硬件安全边界和最终表述。本项目不将 AI 生成或未经现场验证的结论描述为实验性能成果。
+该公开版本在 Codex 协助下完成模块拆分、配置脱敏、测试编排和文档整理。本人负责确认实验流程、现场功能验证结论、公开范围、硬件安全边界和最终表述。本项目不将未经量化测量的精度或性能指标描述为实验成果。
