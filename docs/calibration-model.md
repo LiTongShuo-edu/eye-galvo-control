@@ -6,16 +6,7 @@
 
 RealSense 提供与彩色图像对齐的深度值。设亮斑或双眼中心像素为 $(u, v)$，深度为 $Z$，相机内参主点为 $(c_x, c_y)$，焦距为 $(f_x, f_y)$，则相机坐标系中的三维点记为 $\mathbf{P}_C = [X, Y, Z]^T$，其中：
 
-$$
-\boxed{
-\mathbf{P}_C =
-\begin{bmatrix}
-(u-c_x)Z/f_x \\
-(v-c_y)Z/f_y \\
-Z
-\end{bmatrix}
-}
-$$
+$$\boxed{\mathbf{P}_C =\begin{bmatrix}(u-c_x)Z/f_x \\(v-c_y)Z/f_y \\Z\end{bmatrix}}$$
 
 程序对亮斑中心邻域中的有效深度取平均，再使用上述针孔模型得到每个标定样本的 `coords_3d`。
 
@@ -23,17 +14,13 @@ $$
 
 标定电压网格为：
 
-$$
-\mathcal{V} = \{4.0, 5.0, 6.0\} \times \{4.0, 5.0, 6.0\}
-$$
+$$\mathcal{V} = \{4.0, 5.0, 6.0\} \times \{4.0, 5.0, 6.0\}$$
 
 也就是 $V_x$ 和 $V_y$ 都只取 $4.0$、$5.0$、$6.0$ 三个值，共形成 $3 \times 3$ 的九个电压点。
 
 操作者依次在近距离、工作距离和远距离放置承接平面。对于每一组电压 $(V_x, V_y) \in \mathcal{V}$，系统在三个不同深度获取三维亮斑位置：
 
-$$
-\mathbf{P}_{i,1},\ \mathbf{P}_{i,2},\ \mathbf{P}_{i,3}
-$$
+$$\mathbf{P}_{i,1},\ \mathbf{P}_{i,2},\ \mathbf{P}_{i,3}$$
 
 其中下标 $i$ 表示一个固定电压组合。三个平面各包含完整九点，因此模型由 $27$ 个观测样本建立。若任一采样点经过重试仍缺少有效深度，或三个平面间距不足，校准会终止而不输出模型文件。
 
@@ -41,40 +28,21 @@ $$
 
 对于固定电压组合 $i$，振镜反射方向近似为相机坐标系中的一条直线：
 
-$$
-\mathbf{r}_i(t) = \mathbf{o}_i + t\mathbf{d}_i
-$$
+$$\mathbf{r}_i(t) = \mathbf{o}_i + t\mathbf{d}_i$$
 
 其中 $\mathbf{o}_i$ 是该电压组合对应射线的参考点，$\mathbf{d}_i$ 是单位方向向量。
 
 首先求三个观测点的质心：
 
-$$
-\mathbf{o}_i = \frac{1}{3}\sum_{k=1}^{3}\mathbf{P}_{i,k}
-$$
+$$\mathbf{o}_i = \frac{1}{3}\sum_{k=1}^{3}\mathbf{P}_{i,k}$$
 
 将中心化后的点组成矩阵 $\mathbf{A}_i$：
 
-$$
-\mathbf{A}_i =
-\begin{bmatrix}
-(\mathbf{P}_{i,1}-\mathbf{o}_i)^T \\
-(\mathbf{P}_{i,2}-\mathbf{o}_i)^T \\
-(\mathbf{P}_{i,3}-\mathbf{o}_i)^T
-\end{bmatrix}
-$$
+$$\mathbf{A}_i = \begin{bmatrix} (\mathbf{P}_{i,1}-\mathbf{o}_i)^T \\ (\mathbf{P}_{i,2}-\mathbf{o}_i)^T \\ (\mathbf{P}_{i,3}-\mathbf{o}_i)^T \end{bmatrix}$$
 
 程序对 $\mathbf{A}_i$ 进行奇异值分解，取最大奇异值对应的右奇异向量作为单位方向 $\mathbf{d}_i$，并统一令其 $Z$ 分量为正。这等价于最小化观测点到拟合直线的平方距离：
 
-$$
-\min_{\|\mathbf{d}_i\|=1}
-\sum_{k=1}^{3}
-\left\|
-(\mathbf{P}_{i,k}-\mathbf{o}_i)
--
-\big((\mathbf{P}_{i,k}-\mathbf{o}_i)^T\mathbf{d}_i\big)\mathbf{d}_i
-\right\|^2
-$$
+$$\min_{\|\mathbf{d}_i\|=1} \sum_{k=1}^{3} \left\| (\mathbf{P}_{i,k}-\mathbf{o}_i) - \big((\mathbf{P}_{i,k}-\mathbf{o}_i)^T\mathbf{d}_i\big)\mathbf{d}_i \right\|^2$$
 
 每条射线记录最大垂距残差；残差超过约束时模型被拒绝，以避免将明显不一致的采样用于设备输出。
 
@@ -82,44 +50,23 @@ $$
 
 实时追踪得到双眼中心目标点：
 
-$$
-\mathbf{P}_e = [X_e,\ Y_e,\ Z_e]^T
-$$
+$$\mathbf{P}_e = [X_e,\ Y_e,\ Z_e]^T$$
 
 对每条校准射线，在目标深度平面 $Z = Z_e$ 上求交点。设 $\mathbf{o}_i = [o_x, o_y, o_z]^T$、$\mathbf{d}_i = [d_x, d_y, d_z]^T$，则：
 
-$$
-t_e = \frac{Z_e-o_z}{d_z},
-\qquad
-\mathbf{Q}_i(Z_e) = \mathbf{o}_i + t_e\mathbf{d}_i
-$$
+$$t_e = \frac{Z_e-o_z}{d_z}, \qquad \mathbf{Q}_i(Z_e) = \mathbf{o}_i + t_e\mathbf{d}_i$$
 
 在目标深度处，同一 $V_x$ 下的三个 $V_y$ 交点对 $X$ 坐标取平均，得到横轴标定位置：
 
-$$
-\bar{X}(V_x, Z_e) =
-\frac{
-Q_x(V_x, 4.0, Z_e) + Q_x(V_x, 5.0, Z_e) + Q_x(V_x, 6.0, Z_e)
-}{3}
-$$
+$$\bar{X}(V_x, Z_e) = \frac{Q_x(V_x, 4.0, Z_e) + Q_x(V_x, 5.0, Z_e) + Q_x(V_x, 6.0, Z_e)}{3}$$
 
 同理，对同一 $V_y$ 下的三个 $V_x$ 交点的 $Y$ 坐标取平均：
 
-$$
-\bar{Y}(V_y, Z_e) =
-\frac{
-Q_y(4.0, V_y, Z_e) + Q_y(5.0, V_y, Z_e) + Q_y(6.0, V_y, Z_e)
-}{3}
-$$
+$$\bar{Y}(V_y, Z_e) = \frac{Q_y(4.0, V_y, Z_e) + Q_y(5.0, V_y, Z_e) + Q_y(6.0, V_y, Z_e)}{3}$$
 
 程序将这两组位置按坐标排序，在包围目标点的相邻电压段之间分别进行线性逆插值。例如横轴上若 $\bar{X}(V_a, Z_e) \le X_e \le \bar{X}(V_b, Z_e)$，则：
 
-$$
-V_x = V_a +
-\frac{X_e-\bar{X}(V_a, Z_e)}
-{\bar{X}(V_b, Z_e)-\bar{X}(V_a, Z_e)}
-(V_b-V_a)
-$$
+$$V_x = V_a + \frac{X_e-\bar{X}(V_a, Z_e)}{\bar{X}(V_b, Z_e)-\bar{X}(V_a, Z_e)}(V_b-V_a)$$
 
 $V_y$ 采用相同形式求解。该方法允许坐标方向与电压方向相反的接线或光路布局，因为求解前会按实际交点坐标排序。
 
